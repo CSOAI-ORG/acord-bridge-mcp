@@ -12,6 +12,22 @@ import xml.etree.ElementTree as ET
 
 mcp = FastMCP("ACORD Bridge", instructions="Bridge ACORD insurance messages to ONE OS — parse, validate, map, govern (Solvency II / conduct).")
 
+# ── SIGIL: every governed action → one signed hash-chained hop (SIGIL_LOG unifies all layers) ──
+import hashlib as _hl, time as _t, json as _j, os as _os
+_SIGIL_LOG = _os.environ.get("SIGIL_LOG", _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "bridge_sigil.log"))
+def _sigil(op, body):
+    try:
+        prev = ""
+        if _os.path.exists(_SIGIL_LOG):
+            with open(_SIGIL_LOG) as f:
+                ls = f.readlines()
+                if ls: prev = _j.loads(ls[-1]).get("digest", "")
+        ts = int(_t.time()); dg = _hl.sha256(f"{op}|{ts}|{prev[:8]}|{body}".encode()).hexdigest()[:16]
+        _os.makedirs(_os.path.dirname(_SIGIL_LOG), exist_ok=True)
+        with open(_SIGIL_LOG, "a") as f: f.write(_j.dumps({"ts": ts, "op": op, "body": body, "prev_digest": prev, "digest": dg}) + "\n")
+        return dg
+    except Exception: return ""
+
 DOC_HINTS = {"PolicyholderInfo": "Policyholder", "Policy": "Policy", "ClaimsInfo": "Claim",
              "InsuranceSvcRq": "Service Request", "InsuranceSvcRs": "Service Response"}
 
@@ -94,6 +110,7 @@ def map_to_modern(xml: str) -> Dict[str, Any]:
 @mcp.tool()
 def govern_insurance(xml: str) -> Governance:
     """Governance: insurance conduct + data surface (Solvency II / GDPR / fair treatment) — attestable."""
+    _sigil("G", "acord|govern_insurance")
     p = parse_acord(xml)
     flags = []
     if p.has_personal_data:
