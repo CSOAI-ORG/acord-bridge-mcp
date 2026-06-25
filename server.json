@@ -1,7 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.CSOAI-ORG/acord-bridge-mcp",
-  "description": "Bridge ACORD insurance messages to ONE OS — parse, validate, map, govern (Solvency II / GDPR / conduct).",
+  "description": "Bridge ACORD insurance messages to ONE OS \u2014 parse, validate, map, govern (Solvency II / GDPR / conduct).",
   "version": "0.1.0",
-  "packages": [{"registry_type": "pypi", "identifier": "acord-bridge-mcp", "version": "0.1.0", "transport": {"type": "stdio"}}]
+  "packages": [
+    {
+      "identifier": "acord-bridge-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "registryType": "pypi",
+      "runtimeHint": "python"
+    }
+  ]
 }
