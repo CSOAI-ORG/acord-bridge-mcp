@@ -1,0 +1,8 @@
+# acord-bridge-mcp
+# CSOAI Layer-0 legacy-bridge. Bridge ACORD insurance messages to ONE OS — parse, validate, map, govern (Solvency II / GDPR / conduct).
+
+## Install
+```bash
+pip install -e .
+python server.py
+```
